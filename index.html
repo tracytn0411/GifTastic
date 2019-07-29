@@ -17,16 +17,16 @@
                 <h1 class="display-4">Television GifTastic</h1>
             </div>
             <p class="lead"></p>
+            <form class="input-group newInput">
+                <input type="text" class="form-control" id="userInput" placeholder="Add your favorite TV show here">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-info" type="submit" id="submit_btn">Submit</button>
+                </div>
+            </form>
         </header>
         <section class="container">
-            <div class="row">
-                <div class="col-9" id="topicDisplay"></div>
-                <div class="col-3"></div>
-            </div>
-            <div class="row">
-                <div class="col-9" id="resultDisplay""></div>
-                <div class="col-3"></div>
-            </div>
+            <div class="row" id="topicDisplay"></div>
+            <div class="row" id="resultDisplay"></div>
         </section>
     </main>
 
