@@ -8,7 +8,6 @@ var offSet; //offset value for load more button
 renderButtons();
 
 function renderButtons() {
-    
     $.each (topics, function() {
         var button = $("<button>").addClass("btn btn-primary").text(this).attr({
             "id" : "tvshow",
@@ -21,23 +20,23 @@ function renderButtons() {
 $(document).on("click", ".btn-primary", function() {
     
     //empty content so only 10 gifs display at a time
-    $("#gifsDisplay").empty(); 
-    offSet = 10;
-
+    $("#gifsDisplay").empty();
+    $("#posterDisplay").empty(); 
     //display load more button at the end 
     $("#load-more").show();
-
-    title = $(this).attr("movie_title");
-    var movieTitle = title; //Add "movie" to q search for specific purpose
     
+    title = $(this).attr("movie_title");
+    var movieTitle = title; 
     //encode param in url --> replace space in title with %20
     encodedTitle = encodeURIComponent(movieTitle);
     console.log(encodedTitle); 
-
-    //limit = 10 -> max 10 gifs display
-    //rating: omit -> include all ratings
-    var giphyUrl = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20&limit=10&offset=" + offSet + "&lang=en"; 
+    
+    
+    //----------------GIPHY API------------------
+    offSet = 10;
+    var giphyUrl = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20movie&limit=10&offset=" + offSet + "&lang=en"; //add %20movie
     console.log(giphyUrl);
+    
 
     $.ajax({
         url: giphyUrl,
@@ -64,7 +63,8 @@ $(document).on("click", ".btn-primary", function() {
         });
     });
 
-    var omdbUrl = "http://www.omdbapi.com/?t=" + encodedTitle + "&apikey=7328c6f";
+    //-------------------OMDB API--------------------
+    var omdbUrl = "https://www.omdbapi.com/?t=" + encodedTitle + "&apikey=7328c6f";
     console.log(omdbUrl);
 
     $.ajax({
@@ -81,19 +81,6 @@ $(document).on("click", ".btn-primary", function() {
         divPoster.append(posterImg);
         divPoster.append(posterTitle);
         $("#posterDisplay").append(divPoster);
-
-
-
-       
-
-        // $.each(omdbObs, function () { 
-        //     var divOmdb = $("<div>")
-
-        // });
-
-
-
-
      })
     ;
 
@@ -127,7 +114,7 @@ $("#submit_btn").on("click", function(event){
     }
 })
 
-//------------------------------------------------------------------------
+//---------------------LOAD MORE BUTTON-------------------------------
 // Pagination Objects: total_count: # of all available items on website, count: # of items returned (in this assigment, 10), offset: position in pagination
 
 $("#load-more").on("click", function(event){
@@ -136,7 +123,7 @@ $("#load-more").on("click", function(event){
     
     offSet += 10; //load the next 10 gifs 
 
-    var y = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + title + "&limit=10&offset=" + offSet + "&lang=en";
+    var y = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20movie&limit=10&offset=" + offSet + "&lang=en";
     console.log(y);
 
     $.ajax({
@@ -161,9 +148,6 @@ $("#load-more").on("click", function(event){
             $("#gifsDisplay").append(divGif);
         });
     });
-
-
-    
 
 })
 
