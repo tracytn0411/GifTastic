@@ -1,17 +1,18 @@
 $(function(){
 
-var topics = ["The Office", "Silicon Valley", "South Park", "Arrested Development", "Breaking Bad", "The Big Bang Theory", "The IT Crowd", "Friends", "Green Wings"];
+var topics = ["Forrest Gump", "About Time", "Love Actually", "Rain Man", "The Green Mile", "As Good As It Gets", "The Pursuit of Happyness", "Eternal Sunshine of the Spotless Mind", "Leon: The Professional"];
 
-var tvTitle;
+var title;
+var encodedTitle;
 var offSet; //offset value for load more button
-displayButton();
+renderButtons();
 
-function displayButton() {
+function renderButtons() {
     
     $.each (topics, function() {
         var button = $("<button>").addClass("btn btn-primary").text(this).attr({
             "id" : "tvshow",
-            "tv_title" : this,
+            "movie_title" : this,
         })
         $("#topicDisplay").append(button);
     });
@@ -20,29 +21,34 @@ function displayButton() {
 $(document).on("click", ".btn-primary", function() {
     
     //empty content so only 10 gifs display at a time
-    $("#resultDisplay").empty(); 
+    $("#gifsDisplay").empty(); 
     offSet = 10;
 
     //display load more button at the end 
     $("#load-more").show();
 
-    tvTitle = $(this).attr("tv_title");
-    console.log(tvTitle);
+    title = $(this).attr("movie_title");
+    var movieTitle = title; //Add "movie" to q search for specific purpose
+    
+    //encode param in url --> replace space in title with %20
+    encodedTitle = encodeURIComponent(movieTitle);
+    console.log(encodedTitle); 
 
     //limit = 10 -> max 10 gifs display
     //rating: omit -> include all ratings
-    var u = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + tvTitle + "&limit=10&offset=" + offSet + "&lang=en"; 
-    console.log(u);
+    var giphyUrl = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20&limit=10&offset=" + offSet + "&lang=en"; 
+    console.log(giphyUrl);
 
     $.ajax({
-        url: u,
+        url: giphyUrl,
         method: "GET"
     }).done(function (response) {
-        var tvObs = response.data;
+        var giphyObs = response.data;
 
-        $.each(tvObs, function(){ //this = each tvObs 
+        $.each(giphyObs, function(){ //this = each giphyObs 
             var divGif = $("<div>").addClass("col-4 gify");
-            var displayRating = $("<p>").html("Rating: " + this.rating);
+            var gifRating = $("<p>").html("Rating: " + this.rating);
+            var gifTitle = $("<p>").html("Title: " + this.title);
 
             var gifImg = $("<img>").addClass("img-fluid gif").attr({
                 "src" : this.images.fixed_height_still.url,
@@ -51,11 +57,46 @@ $(document).on("click", ".btn-primary", function() {
                 "data-state" : "still", //toggle play or pause gif between clicks
             });
 
-            divGif.append(displayRating);
+            divGif.append(gifTitle);
+            divGif.append(gifRating);
             divGif.prepend(gifImg);
-            $("#resultDisplay").append(divGif);
+            $("#gifsDisplay").append(divGif);
         });
     });
+
+    var omdbUrl = "http://www.omdbapi.com/?t=" + encodedTitle + "&apikey=7328c6f";
+    console.log(omdbUrl);
+
+    $.ajax({
+        url: omdbUrl,
+        method: "GET"
+    }).done(function (response) { 
+        var omdbObs = response;
+        console.log(omdbObs);
+
+        var divPoster = $("<div>").addClass("col-12");
+        var posterImg = $("<img>").addClass("img-fluid").attr("src", omdbObs.Poster);
+        var posterTitle = $("<h5>").text(omdbObs.Title);
+
+        divPoster.append(posterImg);
+        divPoster.append(posterTitle);
+        $("#posterDisplay").append(divPoster);
+
+
+
+       
+
+        // $.each(omdbObs, function () { 
+        //     var divOmdb = $("<div>")
+
+        // });
+
+
+
+
+     })
+    ;
+
 });
 
 $("#submit_btn").on("click", function(event){
@@ -68,11 +109,11 @@ $("#submit_btn").on("click", function(event){
     $("#topicDisplay").empty();
     var newTvshow = $("#userInput").val().trim();
     topics.push(newTvshow); //add user input to topics array
-    displayButton(); // display new set of tv show buttons
+    renderButtons(); // display new set of tv show buttons
 })
 
     //! $(."gif").on("click", function())} won't work here
-$(document).on("click", ".gif", function (){
+    $(document).on("click", ".gif", function (){
     var gifState = $(this).attr("data-state");
 
     if (gifState === "still"){
@@ -89,22 +130,24 @@ $(document).on("click", ".gif", function (){
 //------------------------------------------------------------------------
 // Pagination Objects: total_count: # of all available items on website, count: # of items returned (in this assigment, 10), offset: position in pagination
 
-$("#load-more").on("click", function(){
+$("#load-more").on("click", function(event){
+
+    event.preventDefault(); //prevent page scroll to the top
+    
     offSet += 10; //load the next 10 gifs 
 
-    var y = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + tvTitle + "&limit=10&offset=" + offSet + "&lang=en";
-
+    var y = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + title + "&limit=10&offset=" + offSet + "&lang=en";
     console.log(y);
 
     $.ajax({
         url: y,
         method: "GET"
     }).done(function (response) {
-        var tvObs = response.data;
+        var giphyObs = response.data;
 
-        $.each(tvObs, function(){ //this = each tvObs 
+        $.each(giphyObs, function(){ //this = each giphyObs 
             var divGif = $("<div>").addClass("col-4 gify");
-            var displayRating = $("<p>").html("Rating: " + this.rating);
+            var gifRating = $("<p>").html("Rating: " + this.rating);
 
             var gifImg = $("<img>").addClass("img-fluid gif").attr({
                 "src" : this.images.fixed_height_still.url,
@@ -113,9 +156,9 @@ $("#load-more").on("click", function(){
                 "data-state" : "still", //toggle play or pause gif between clicks
             });
 
-            divGif.append(displayRating);
+            divGif.append(gifRating);
             divGif.prepend(gifImg);
-            $("#resultDisplay").append(divGif);
+            $("#gifsDisplay").append(divGif);
         });
     });
 
