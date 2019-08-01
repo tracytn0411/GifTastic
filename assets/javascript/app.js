@@ -1,24 +1,25 @@
 $(function(){
 
-var topics = ["Forrest Gump", "About Time", "Love Actually", "Rain Man", "The Green Mile", "As Good As It Gets", "The Pursuit of Happyness", "Eternal Sunshine of the Spotless Mind", "Leon: The Professional"];
+var topics = ["Forrest Gump", "About Time", "Love Actually", "Rain Man", "The Green Mile", "As Good As It Gets", "Leon: The Professional", "The Pursuit of Happyness", "Eternal Sunshine of the Spotless Mind"];
 
 var title;
 var encodedTitle;
 var offSet; //offset value for load more button
 renderButtons();
 
+//Create buttons for topics array
 function renderButtons() {
     $.each (topics, function() {
-        var button = $("<button>").addClass("btn btn-primary").text(this).attr({
+        var button = $("<button>").addClass("btn btn-outline-secondary text-capitalize topicBtn").text(this).attr({
             "id" : "tvshow",
             "movie_title" : this,
         })
-        $("#topicDisplay").append(button);
+        $("#featuredMovies").append(button);
     });
 }
 
-$(document).on("click", ".btn-primary", function() {
-    
+//Function when topic button is clicked
+$(document).on("click", ".topicBtn", function() {
     //empty content so only 10 gifs display at a time
     $("#gifsDisplay").empty();
     $("#posterDisplay").empty(); 
@@ -26,17 +27,25 @@ $(document).on("click", ".btn-primary", function() {
     $("#load-more").show();
     
     title = $(this).attr("movie_title");
-    var movieTitle = title; 
+    //var title = title; 
     //encode param in url --> replace space in title with %20
-    encodedTitle = encodeURIComponent(movieTitle);
+    encodedTitle = encodeURIComponent(title);
     console.log(encodedTitle); 
+    offSet = 10; //display the first 10 gifs from api source
+
+    //++++Ajax calling Giphy API++++
+    giphyURL();
     
-    
-    //----------------GIPHY API------------------
-    offSet = 10;
+    //++++Ajax calling Omdb API++++
+    omdbURL();
+        
+});
+
+
+//----------------GIPHY API------------------
+function giphyURL(){
     var giphyUrl = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20movie&limit=10&offset=" + offSet + "&lang=en"; //add %20movie
     console.log(giphyUrl);
-    
 
     $.ajax({
         url: giphyUrl,
@@ -46,9 +55,9 @@ $(document).on("click", ".btn-primary", function() {
 
         $.each(giphyObs, function(){ //this = each giphyObs 
             var divGif = $("<div>").addClass("col-4 gify");
-            var gifRating = $("<p>").html("Rating: " + this.rating);
-            var gifTitle = $("<p>").html("Title: " + this.title);
-
+            var upperRating = $("<span>").addClass("text-uppercase").text(this.rating); //transform rating value to uppercase
+            var gifRating = $("<dd>").addClass("gifRating").html("Rating: ").append(upperRating);
+            var gifTitle = $("<dt>").addClass("gifTitle text-capitalize").html(this.title);
             var gifImg = $("<img>").addClass("img-fluid gif").attr({
                 "src" : this.images.fixed_height_still.url,
                 "data-still" : this.images.fixed_height_still.url,
@@ -62,8 +71,10 @@ $(document).on("click", ".btn-primary", function() {
             $("#gifsDisplay").append(divGif);
         });
     });
+}
 
-    //-------------------OMDB API--------------------
+//-------------------OMDB API--------------------
+function omdbURL() {
     var omdbUrl = "https://www.omdbapi.com/?t=" + encodedTitle + "&apikey=7328c6f";
     console.log(omdbUrl);
 
@@ -71,21 +82,30 @@ $(document).on("click", ".btn-primary", function() {
         url: omdbUrl,
         method: "GET"
     }).done(function (response) { 
-        var omdbObs = response;
-        console.log(omdbObs);
+        var omdb = response;
+        console.log(omdb);
+        
+        //Display movie poster on the left
+        var divLeft = $("<div>").addClass("col-md-5");
+        divLeft.append (
+            $("<img>").addClass("img-fluid").attr("src", omdb.Poster))
 
-        var divPoster = $("<div>").addClass("col-12");
-        var posterImg = $("<img>").addClass("img-fluid").attr("src", omdbObs.Poster);
-        var posterTitle = $("<h5>").text(omdbObs.Title);
+        //Display movie title, year, info on the right
+        var divRight = $("<div>").addClass("col-md-7");
+        divRight.append ([
+            $("<h4>").addClass("font-weight-bold").text(omdb.Title),
+            $("<p>").text(omdb.Year),
+            $("<p>").addClass("font-italic").text(omdb.Plot),
+            $("<p>").addClass("font-weight-light").text(omdb.Actors),
+        ])
+            
+        $("#posterDisplay").append(divLeft);
+        $("#posterDisplay").append(divRight);      
+    })
+}
 
-        divPoster.append(posterImg);
-        divPoster.append(posterTitle);
-        $("#posterDisplay").append(divPoster);
-     })
-    ;
 
-});
-
+//------------USER MOVIES INPUT-----------------
 $("#submit_btn").on("click", function(event){
     //prevent the form from submitting itself
         //user can hit enter to submit input
@@ -93,14 +113,15 @@ $("#submit_btn").on("click", function(event){
 
     //empty all tv show buttons before the new buttons array runs
         //to prevent duplicate buttons
-    $("#topicDisplay").empty();
+    $("#featuredMovies").empty();
     var newTvshow = $("#userInput").val().trim();
     topics.push(newTvshow); //add user input to topics array
     renderButtons(); // display new set of tv show buttons
 })
 
+//------PLAY/PAUSE GIF------
     //! $(."gif").on("click", function())} won't work here
-    $(document).on("click", ".gif", function (){
+$(document).on("click", ".gif", function (){
     var gifState = $(this).attr("data-state");
 
     if (gifState === "still"){
@@ -118,37 +139,12 @@ $("#submit_btn").on("click", function(event){
 // Pagination Objects: total_count: # of all available items on website, count: # of items returned (in this assigment, 10), offset: position in pagination
 
 $("#load-more").on("click", function(event){
-
     event.preventDefault(); //prevent page scroll to the top
-    
     offSet += 10; //load the next 10 gifs 
-
-    var y = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20movie&limit=10&offset=" + offSet + "&lang=en";
-    console.log(y);
-
-    $.ajax({
-        url: y,
-        method: "GET"
-    }).done(function (response) {
-        var giphyObs = response.data;
-
-        $.each(giphyObs, function(){ //this = each giphyObs 
-            var divGif = $("<div>").addClass("col-4 gify");
-            var gifRating = $("<p>").html("Rating: " + this.rating);
-
-            var gifImg = $("<img>").addClass("img-fluid gif").attr({
-                "src" : this.images.fixed_height_still.url,
-                "data-still" : this.images.fixed_height_still.url,
-                "data-animate" : this.images.fixed_height.url,
-                "data-state" : "still", //toggle play or pause gif between clicks
-            });
-
-            divGif.append(gifRating);
-            divGif.prepend(gifImg);
-            $("#gifsDisplay").append(divGif);
-        });
-    });
-
+    giphyURL();
 })
+
+
+
 
 })
