@@ -64,9 +64,16 @@ function giphyURL(){
                 "data-animate" : this.images.fixed_height.url,
                 "data-state" : "still", //toggle play or pause gif between clicks
             });
+            //Create 1-click download button
+            var gifDownload = $("<button>").addClass("btn downloadGif").attr({
+                "data-download": this.images.downsized_medium.url,
+                "data-name": this.title,
+            });
+            gifDownload.append("<i class='fa fa-download' aria-hidden='true'></i>");
 
             divGif.append(gifTitle);
             divGif.append(gifRating);
+            divGif.append(gifDownload);
             divGif.prepend(gifImg);
             $("#gifsDisplay").append(divGif);
         });
@@ -113,9 +120,15 @@ $("#submit_btn").on("click", function(event){
     //empty all tv show buttons before the new buttons array runs
         //to prevent duplicate buttons
     $("#featuredMovies").empty();
+   
     var newTvshow = $("#userInput").val().trim();
-    topics.push(newTvshow); //add user input to topics array
-    renderButtons(); // display new set of tv show buttons
+
+    if (newTvshow !== ""){
+        topics.push(newTvshow); //add user input to topics array
+        renderButtons(); // display new set of tv show buttons
+    } else {
+        renderButtons();
+    }
 })
 
 //------PLAY/PAUSE GIF------
@@ -133,6 +146,32 @@ $(document).on("click", ".gif", function (){
         $(this).attr("data-state", "still");
     }
 })
+
+//-----------  1-CLICK DOWNLOAD BUTTON ----------------
+//-----Let user download file without setting up server
+$(document).on('click', ".downloadGif", function() {
+    var downloadUrl = $(this).attr("data-download");
+    var downloadName = $(this).attr("data-name");
+    console.log(downloadUrl);
+
+    $.ajax({
+        url: downloadUrl,
+        method: 'GET',
+        xhrFields: {
+            responseType: 'blob' //binary large object, default is text
+        },
+        success: function (data) {
+            var a = document.createElement('a'); //create link in html
+            var url = window.URL.createObjectURL(data); //API takes blob and return url below to access it
+            a.href = url;
+            a.download = downloadName;
+            document.body.append(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);//free up memory of object url
+        }
+    });
+});
 
 //---------------------LOAD MORE BUTTON-------------------------------
 // Pagination Objects: total_count: # of all available items on website, count: # of items returned (in this assigment, 10), offset: position in pagination
