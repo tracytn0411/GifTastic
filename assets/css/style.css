@@ -7,18 +7,16 @@ html, body {
 }
 
 body {
-    background-image: url("/assets/images/Background1.jpg");
+    background-image: url("../images/Background1.jpg");
     background-repeat: no-repeat;
     background-position: bottom;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover; 
+    background-attachment: fixed;
     background-size: cover;
 
 }
 
 .jumbotron {
-    background-image: url("/assets/images/spotlights.jpg");
+    background-image: url("../images/spotlights.jpg");
     background-color: rgba(22, 22, 22, 0.87);
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -31,74 +29,43 @@ body {
     background-color: whitesmoke;
 }
 
+/*Set default sizes*/
 .newInput {
     width: 50%;
     margin: 3rem auto;
-
 }
 
-    
-
-/*Default*/
-h1 {
-    font-size: 2rem;
-}
-
-#featured {
-    font-size: 1.5rem;
-}
-
+/*Scale for xs devices*/
 @media (max-width: 575.98px){
     .topicBtn {
         font-size: 0.75rem 
     }
-
+    .newInput {
+        margin: 0;
+        width: 100%;
+    }
+    .jumbotron {
+        background-image: url("../images/spotlights-xs.jpg")
+    }
+    #featuredMovies {
+        margin: 0;
+    }
 }
 
-
-
+/*For xs and snall devices*/
 @media (max-width: 767.98px){
     .gifTitle, .gifRating {
         display: none;
     }
-   
-    .img {
+    .omdbImg {
         width: 70%;
     }
-
-}
-
-
-/*Small devices (tablets-portrait, phones-landscape mode)*/
-@media (min-width: 576px){
-    h1 {
-        font-size: 2.5rem;
+    .newInput {
+        margin: 1rem auto;
     }
-
-    
-    
-}
-/*Medium devices (tablets-landscape,)*/
-@media (min-width: 768px){
-
-    h1 {
-        font-size: 3rem;
-    }
-    
-  
-}
-
-/*Large devices (desktop, laptops)*/
-@media (min-width: 992px){
-   h1 {
-       font-size: 3.5rem;
-   }
-}
-
-/*Big Screen*/
-@media (min-width: 1200px){
-    h1 {
-        font-size: 4rem;
+    #featuredMovies {
+        padding: 0;
     }
 }
+
 
