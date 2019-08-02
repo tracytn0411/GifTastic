@@ -1,6 +1,6 @@
 $(function(){
 
-var topics = ["Forrest Gump", "About Time", "Love Actually", "Rain Man", "The Green Mile", "As Good As It Gets", "Leon: The Professional", "The Pursuit of Happyness", "Eternal Sunshine of the Spotless Mind"];
+var topics = ["Forrest Gump", "Rain Man", "The Prestige", "About Time", "Love Actually", "The Green Mile", "As Good As It Gets", "Closer"];
 
 var title;
 var encodedTitle;
@@ -23,11 +23,11 @@ $(document).on("click", ".topicBtn", function() {
     //empty content so only 10 gifs display at a time
     $("#gifsDisplay").empty();
     $("#posterDisplay").empty(); 
+
     //display load more button at the end 
     $("#load-more").show();
     
     title = $(this).attr("movie_title");
-    //var title = title; 
     //encode param in url --> replace space in title with %20
     encodedTitle = encodeURIComponent(title);
     console.log(encodedTitle); 
@@ -41,8 +41,8 @@ $(document).on("click", ".topicBtn", function() {
         
 });
 
-
 //----------------GIPHY API------------------
+//=======Function to call Gipphy API when topicBtn is clicked
 function giphyURL(){
     var giphyUrl = "https://api.giphy.com/v1/gifs/search?api_key=fDUfRFjS2TdWvnNC2NYYCXaUXXv3VyAr&q=" + encodedTitle + "%20movie&limit=10&offset=" + offSet + "&lang=en"; //add %20movie
     console.log(giphyUrl);
@@ -104,7 +104,6 @@ function omdbURL() {
     })
 }
 
-
 //------------USER MOVIES INPUT-----------------
 $("#submit_btn").on("click", function(event){
     //prevent the form from submitting itself
@@ -137,14 +136,26 @@ $(document).on("click", ".gif", function (){
 
 //---------------------LOAD MORE BUTTON-------------------------------
 // Pagination Objects: total_count: # of all available items on website, count: # of items returned (in this assigment, 10), offset: position in pagination
-
 $("#load-more").on("click", function(event){
     event.preventDefault(); //prevent page scroll to the top
     offSet += 10; //load the next 10 gifs 
     giphyURL();
 })
 
-
-
-
 })
+
+//========================FIREBASE========================================//
+
+// Get a reference to the database service
+var database = firebase.database();
+
+// On Click
+$(".firebasebtn").on("click", function() {
+    event.preventDefault();
+    var name = $('#name').val();
+    var num = $('#favNum').val();
+
+    database.ref(name).set({
+      favNum : num
+    });
+  });

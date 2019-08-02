@@ -11,25 +11,31 @@
     <title>TV GifTastic</title>
 </head>
 <body class="d-flex flex-column h-100">
-
+    <!--Jumbotron header includes tittle, userinput movie and topic buttons-->
     <header class="jumbotron text-center text-white">
-        <h1>Movies GifTastic</h1>
+        <!--Title - Use image for for better font scaling-->
+        <img class= "img-fluid appTitle" width="55%" src="assets/images/Giftastic Title.png" alt="">
+        <!--User input to add movie & submit-->
         <form class="input-group newInput">
             <input type="text" class="form-control" id="userInput" placeholder="Add your favorite TV show here">
             <div class="input-group-append">
                 <button class="btn btn-outline-info bg-white" type="submit" id="submit_btn">Submit</button>
             </div>
         </form>
+        <!--Display topic buttons-->
         <section class="row justify-content-center">
             <p class="col-sm-7" id="featuredMovies"></p>
         </section>
     </header>
 
+    <!--Main content to display GIPHY and OMBD APIs-->
     <section class="container-fluid"> 
         <div class="row justify-content-center" id="mainDisplay">
+            <!--Left panel: display movie poster, plot, movie year and actors-->
             <div class="col-sm-5">
                 <div class="row" id="posterDisplay"></div>
             </div>
+            <!--Right panel: display gifs with rating and loadmore button at the bottom-->
             <div class="col-sm-7">
                 <div class="row" id="gifsDisplay"></div>
                 <div class="row justify-content-center mb-4">
@@ -41,18 +47,53 @@
         </div>
     </section>
 
+    <!--?Firebase testing area-->
+    <section id="firebasetest">
+        <form>
+            <input type="text" id="name" placeholder="your name">
+            <input type="text" id="favNum" placeholder="your favorite number">
+            <button class="firebasebtn">add to database</button>
+        </form>
+        <div id="firebaseTest"></div>
+    </section>
 
+     <!--Sticky footer: give credits to Giphy and OBMD-->
     <footer class="footer mt-auto py-3 align-items-end">
         <div class="container text-center footer">
                 <img class="img-fluid" width="30%" src="assets/images/footer1.png" alt="">
         </div>
     </footer>
-    <!--Slim version of jquery does not support ajax calling-->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   
+<!--===========/////////////////////////////======================-->
+<!--=======jQuery first, then Firebase SDK, then Bootstrap JS, then Tracy JS-->
 
+    <!--!Slim version of jquery does not support ajax calling-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!--The core Firebase JS SDK-->
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
+    <script>
+        // My web app's Firebase configuration
+        var config = {
+            apiKey: "AIzaSyBhJoin6lqqaUBB3flo9gGvH3uxspI7E7A",
+            authDomain: "fir-2e450.firebaseapp.com",
+            databaseURL: "https://fir-2e450.firebaseio.com",
+            projectId: "fir-2e450",
+            storageBucket: "fir-2e450.appspot.com",
+            messagingSenderId: "828869966160",
+            appId: "1:828869966160:web:401c23368af98c44"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(config);
+    </script>
+
+    <!--Bootstrap JS-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+
+    <!--Tracy JS-->
     <script type="text/javascript" src="assets/javascript/app.js"></script>
-    
 </body>
 </html>
