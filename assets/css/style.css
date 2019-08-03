@@ -29,6 +29,22 @@ body {
     background-color: whitesmoke;
 }
 
+/*Gifs display*/
+.gify {
+    padding-bottom: 1rem;
+}
+
+#firebaseGif {
+    height: 160px;
+    overflow-y: scroll;
+    border: solid 0.2rem grey;
+    margin: 0 4rem;
+}
+
+.favGif {
+    max-width: 75%;
+}
+
 /*Set default sizes*/
 .newInput {
     width: 50%;
