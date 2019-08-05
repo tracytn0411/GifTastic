@@ -35,11 +35,14 @@ body {
 }
 
 #firebaseGif {
+
     height: 160px;
     overflow-y: scroll;
     border: solid 0.2rem grey;
-    margin: 0 4rem;
+    margin: 0 1rem;
 }
+
+
 
 .favGif {
     max-width: 75%;

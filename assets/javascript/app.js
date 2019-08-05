@@ -54,7 +54,7 @@ function giphyURL(){
         var giphyObs = response.data;
 
         $.each(giphyObs, function(){ //this = each giphyObs 
-            var gifDivCol = $("<div>").addClass("col-4 gify");
+            var gifDivCol = $("<div>").addClass("col-md-4 col-sm-6 gify");
             var gifDivCard = $("<div>").addClass("card");//style each gif with bootstrap card
             var gifCardBody = $("<div>").addClass("card-body");
             var upperRating = $("<span>").addClass("text-uppercase").text(this.rating); //transform rating value to uppercase
@@ -68,30 +68,36 @@ function giphyURL(){
             });
 
             //Create 1-click download button
-            var gifDownload = $("<button>").addClass("btn downloadGif").attr({
+            var downloadIcon = $("<button>").addClass("btn download-btn").attr({
                 "data-download": this.images.downsized_medium.url,
                 "data-name": this.title,
             });
-            gifDownload.append("<i class='fa fa-download' aria-hidden='true'></i>");
+            downloadIcon.append("<i class='fa fa-download' aria-hidden='true'></i>");
 
-            //Create favorite button
-            var gifFav = $("<button>").addClass("btn favGif").attr({
+            //Create favorite button (with font awesome heart icon)
+            var heartIcon = $("<button>").addClass("btn heart-btn").attr({
                 "src" : this.images.fixed_height_still.url,
                 "data-still" : this.images.fixed_height_still.url,
                 "data-animate" : this.images.fixed_height.url,
-                "data-state" : "still", //toggle play or pause gif between clicks
+                "data-state" : "still", 
+                //download url
+                "data-download": this.images.downsized_medium.url,
+                "data-name": this.title,
             });
-            gifFav.append('<i class="fa fa-heart-o" aria-hidden="true"></i>'
+            heartIcon.append('<i class="fa fa-heart-o" aria-hidden="true"></i>'
             );
 
+    
             gifDivCol.append(gifDivCard);
             gifDivCard.prepend(gifImg);
             gifDivCard.append(gifCardBody);
             gifCardBody.append(gifTitle);
             gifCardBody.append(gifRating);
                 
-            gifCardBody.append(gifDownload);
-            gifCardBody.append(gifFav);
+            gifCardBody.append(downloadIcon);
+            gifCardBody.append(heartIcon);
+           
+            
             $("#gifsDisplay").append(gifDivCol);
         });
     });
@@ -174,7 +180,7 @@ $("#load-more").on("click", function(event){
 
 //-----------  1-CLICK DOWNLOAD BUTTON ----------------
 //-----Let user download file without setting up server
-$(document).on('click', ".downloadGif", function() {
+$(document).on('click', ".download-btn", function(event) {
     event.preventDefault();
     var downloadUrl = $(this).attr("data-download");
     var downloadName = $(this).attr("data-name");
@@ -204,32 +210,70 @@ $(document).on('click', ".downloadGif", function() {
 // Get a reference to the database service
 var database = firebase.database();
 
-$(document).on("click", ".favGif", function(){
+$(document).on("click", ".heart-btn", function(){
     event.preventDefault();
     //toggle font awesome heart icon with jQuery .toggleClass
     $(this).find(".fa-heart-o").toggleClass("fa-heart-o fa-heart");
     var favGifUrl = $(this).attr("src");
+    var favGifStill = $(this).attr("data-still");
+    var favGifAnimate = $(this).attr("data-animate");
+    var favGifTitle = $(this).attr("data-name");
+    var favGifDownload = $(this).attr("data-download")
 
     database.ref().push({
-        giphyItem : favGifUrl
+        giphyItem : favGifUrl,
+        giphyStill : favGifStill,
+        giphyAnimate : favGifAnimate,
+        giphyTitle : favGifTitle,
+        giphyDownload : favGifDownload,
+
     });
 })
 
- database.ref().on("child_added", function(snapshot) {
-    var data = snapshot.val();
-    console.log(data);
-    var favDivCol = $("<div>").addClass("p-1 mx-0 d-flex justify-content-center");
+database.ref().on("child_added", function(snapshot) {
+    var id = snapshot.key; //long random key in database, use to remove later
+    var fireData = snapshot.val();
+    console.log(fireData);
+    var favDivCol = $("<div>").addClass("p-1 mx-0 d-flex justify-content-center").attr("id", id);
+    
+    //Set img class gif trigger play/pause function above
+    var favGifImg = $("<img>").addClass("img-fluid gif").attr({
+        "src" : fireData.giphyItem,
+        "data-still" : fireData.giphyStill,
+        "data-animate" : fireData.giphyAnimate,
+        "data-state" : "still",    
+    });
 
-    var favGifDisplay = $("<img>").addClass("img-fluid favGif").attr("src",data.giphyItem);
-    favDivCol.append(favGifDisplay)
+    //Keep download icon on fav gif, use same class to trigger download function above
+    var favDownloadIcon = $("<button>").addClass("btn download-btn").attr({
+        "data-download": fireData.giphyDownload,
+        "data-name": fireData.giphyTitle,
+    });
+    favDownloadIcon.append("<i class='fa fa-download' aria-hidden='true'></i>");
+
+    //Create remove button
+    var trashIcon = $("<button>").addClass("btn remove-btn").attr("data", id);//use firekey to remove firebase data 
+    trashIcon.append('<i class="fa fa-trash" aria-hidden="true"></i>'
+    );
+
+    favDivCol.append(favGifImg);
+    favDivCol.append(favDownloadIcon);
+    favDivCol.append(trashIcon);
     $("#firebaseGif").append(favDivCol)
+})
 
+$(document).on("click", ".remove-btn", function(){
+    event.preventDefault();
+    var giphyKey = $(this).attr("data");
+    console.log(giphyKey);
+    //Find all key values
+    var giphyRef = database.ref(giphyKey);
+    console.log(giphyRef);
+    //Remove from database
+    giphyRef.remove();
+    //Remove from DOM
+    $(this).parent().remove();
 
- })
-
-    //TODO Add remove favorite gif button
-        //will also remove from firebase
-
-
+})
 
 })
