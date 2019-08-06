@@ -36,7 +36,9 @@
 
     <!--Favorite gifs list-->
     <section class="container-fluid favDisplay">
-        <div class="d-flex justify-content-center flex-wrap" id="firebaseGif"></div>
+        <!---Browser default items to stretch 
+            -> set div to align child items-->
+        <div class="d-flex flex-column align-items-start flex-wrap" id="firebaseGif"></div>
     </section>
 
     <!--Main content to display GIPHY and OMBD APIs-->
@@ -48,7 +50,8 @@
             </div>
             <!--Right panel: display gifs with rating and loadmore button at the bottom-->
             <div class="col-sm-7">
-                <div class="row" id="gifsDisplay"></div>
+                <!--!.card-colums to arrange images follow masonary layout-->
+                <div class="card-columns" id="gifsDisplay"></div>
                 <div class="row justify-content-center mb-4">
                     <div class="col-12-xs">
                         <a href="#" class="btn btn-outline-info" id="load-more">Load more</a>

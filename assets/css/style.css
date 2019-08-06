@@ -12,7 +12,6 @@ body {
     background-position: bottom;
     background-attachment: fixed;
     background-size: cover;
-
 }
 
 .jumbotron {
@@ -22,37 +21,43 @@ body {
     background-attachment: fixed;
     background-position: top;
     background-size: contain;
-
 }
 
+/*Movie Titles Buttons*/
 .topicBtn {
     background-color: whitesmoke;
 }
 
-/*Gifs display*/
-.gify {
-    padding-bottom: 1rem;
-}
-
-#firebaseGif {
-
-    height: 160px;
-    overflow-y: scroll;
-    border: solid 0.2rem grey;
-    margin: 0 1rem;
-}
-
-
-
-.favGif {
-    max-width: 75%;
-}
-
-/*Set default sizes*/
+/*User Input box*/
 .newInput {
     width: 50%;
     margin: 3rem auto;
 }
+
+/* Gifs display - Bootstrap Card*/
+.card-columns {
+    display: inline-block;
+    width: 100%;
+}
+.card-body {
+    padding: 0.5rem
+}
+.gify {
+    padding-bottom: 1rem;
+}
+dd {
+    margin-bottom: 0;
+}
+
+/*Fav gifs slider/carousel*/
+#firebaseGif {
+    height: 160px;
+
+    overflow-x: scroll;
+    margin: 0 1rem;
+
+}
+
 
 /*Scale for xs devices*/
 @media (max-width: 575.98px){
