@@ -20,12 +20,12 @@
     <!--Jumbotron header includes tittle, userinput movie and topic buttons-->
     <header class="jumbotron text-center text-white">
         <!--Title - Use image for better font scaling-->
-        <img class= "img-fluid appTitle" width="55%" src="assets/images/Giftastic Title.png" alt="">
+        <img class= "img-fluid appTitle" width="55%" src="assets/images/Giftastic Title 1.png" alt="">
         <!--User input to add movie & submit-->
         <form class="input-group newInput">
             <input type="text" class="form-control" id="userInput" placeholder="Add your favorite TV show here">
             <div class="input-group-append">
-                <button class="btn btn-outline-info bg-white" type="submit" id="submit_btn"><i class="fa fa-film" aria-hidden="true"></i> Submit</button>
+                <button class="btn" type="submit" id="submit_btn"><i class="fa fa-film" aria-hidden="true"></i> Submit</button>
             </div>
         </form>
         <!--Display topic buttons-->
@@ -35,21 +35,21 @@
     </header>
 
     <!--Favorite gifs list-->
-    <section class="container-fluid favDisplay">
+    <section class="container-fluid favDisplay border border-light">
         <!---Browser default items to stretch 
             -> set div to align child items-->
-        <div class="d-flex flex-column align-items-start flex-wrap" id="firebaseGif"></div>
+        <div class="d-flex flex-column align-items-center flex-wrap" id="firebaseGif"></div>
     </section>
 
     <!--Main content to display GIPHY and OMBD APIs-->
     <section class="container-fluid mt-4"> 
         <div class="row justify-content-center" id="mainDisplay">
             <!--Left panel: display movie poster, plot, movie year and actors-->
-            <div class="col-sm-5">
-                <div class="row" id="posterDisplay"></div>
+            <div class="col-sm-6 col-md-5">
+                <div class="row text-center" id="posterDisplay"></div>
             </div>
             <!--Right panel: display gifs with rating and loadmore button at the bottom-->
-            <div class="col-sm-7">
+            <div class="col-sm-6 col-md-7">
                 <!--!.card-colums to arrange images follow masonary layout-->
                 <div class="card-columns" id="gifsDisplay"></div>
                 <div class="row justify-content-center mb-4">
